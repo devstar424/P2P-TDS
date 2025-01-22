@@ -30,9 +30,9 @@ async function postApi(objBody,url,onSuccess,onError,loader2 = null) {
     }
 }
 function logout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminName');
     postApi({},urlApiLogout,(data) =>{
-        localStorage.removeItem('token');
-        localStorage.removeItem('adminName');
         window.location.href = `${urlSfpl}/login.html`;
     }, (error) => {
         alert(error);

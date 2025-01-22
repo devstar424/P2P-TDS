@@ -70,6 +70,12 @@
         #divPostdate {
             display: none;
         }
+        #btnDelete{
+            background-color: crimson;
+        }
+        #btnDelete:hover{
+            background-color: darkred;
+        }
         p { 
             white-space: pre-line; 
             /* CSS property to preserve line breaks */ 
@@ -119,7 +125,8 @@
             
             <p id="pTdsDt">TDS: 00.00
                 PayableAmount: 00.00</p><br>
-            <button type="button" onclick="addTds()">Submit</button>
+            <button type="button" onclick="addTds()">Submit</button><br><br>
+            <button id="btnDelete" type="button" onclick="deleteTds()">Delete</button>
     </div>
 
     <script src="script.js"></script>
@@ -158,6 +165,18 @@
             },(error)=>{
                 alert(error);
             });
+        }
+        function deleteTds(){
+            if(confirm("Are you sure to delete?")){
+                let objBody = {};
+                objBody.id = editId;
+                postApi(objBody,urlApiDeleteTds,(data)=>{
+                    alert("Deleted Successfully");
+                    window.location.href = 'index.html';
+                },(error)=>{
+                    alert(error);
+                });
+            }
         }
         function count() {
             let amount = parseFloat(inpAmount.value);

@@ -185,12 +185,11 @@ function sqlDeleteReq($con,$table,$adminName,$condition,$conditionParams){
     if(!in_array($table,$arrNoHistoryTable)){
         $qry = qryGet([],$table,$condition);
         $row = sqlGetReq($con,$qry,$params);
-        ['dlt_by', 'dlt_table', 'dlt_row', 'dlt_postdate'];
         $objDeletedRow = new stdClass();
-        $objDeletedRow->dlt_by = $adminName;
-        $objDeletedRow->dlt_table = $table;
-        $objDeletedRow->dlt_row = json_encode($row);
-        $objDeletedRow->dlt_postdate = date("Y-m-d H:i:s");
+        $objDeletedRow->admin_name = $adminName;
+        $objDeletedRow->tbl = $table;
+        $objDeletedRow->row = json_encode($row);
+        $objDeletedRow->postdate = date("Y-m-d H:i:s");
         $insertId = sqlPostReq($con,$objDeletedRow,"deleted_row");
     }
 

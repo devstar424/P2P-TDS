@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="root.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFPL ADD TDS</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        /* .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        } */
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #6200ea;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #3700b3;
+        }
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+        }
+        #divOtp {
+            display: none;
+        }
+        #divPostdate {
+            display: none;
+        }
+        p { 
+            white-space: pre-line; 
+            /* CSS property to preserve line breaks */ 
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        Loading...
+    </div>
+    <div class="form-container">
+        
+            <h2 id="h2Title" style="text-align: center;">NEW TDS</h2>
+            <h4 style="text-align: center;" role="button" type="button" onclick="back()"><-- Back to History</h4><br>
+
+
+            <label for="inpPan">PAN*:</label>
+            <input type="text" id="inpPan" name="inpPan" placeholder="AAAAA0000A" required>
+            <button id="btnGetOtp" type="button" onclick="getOtp()">Get OTP</button>
+            <br>
+            <div id="divOtp">
+                <label for="inpOtp">OTP:</label>
+                <input type="number" id="inpOtp" name="inpOtp" placeholder="Enter OTP here" required>
+                <button type="button" onclick="getPan()">Verify PAN</button>
+            </div>
+
+            <p id="pPanDt">Pan Details:</p>
+            <br>
+            
+            <label for="inpOrderId">Order Id:</label>
+            <input type="text" id="inpOrderId" name="inpOrderId" placeholder="Order Id">
+
+            <label for="inpName">Name:</label>
+            <input type="text" id="inpName" name="inpName" placeholder="Enter Name Here...">
+
+            <label for="inpAmount">Amount*:</label>
+            <input type="number" id="inpAmount" name="inpAmount" placeholder="Total Amount..." oninput="count()">
+
+
+            <label for="inpPhone">Phone:</label>
+            <input type="tel" id="inpPhone" name="inpPhone" value="+91" placeholder="+910000000000">
+
+            <div id="divPostdate">
+                <label for="inpPostdate">Phone:</label>
+                <input type="datetime-local" id="inpPostdate" name="inpPostdate">
+            </div>
+            
+            <p id="pTdsDt">TDS: 00.00
+                PayableAmount: 00.00</p><br>
+            <button type="button" onclick="addTds()">Submit</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        window.addEventListener('beforeunload', function(event) {
+    // Prevent accidental navigation
+    event.preventDefault();
+    event.returnValue = 'Are you sure you want to leave?';
+  });
+  let editId = 0;
+  const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      if(urlParams.has('edit')){
+          editId = urlParams.get('edit');
+          getTds(editId);
+          divPostdate.style.display = 'initial';
+      }
+        //const token = localStorage.getItem('token');
+        const mobNo = "9023985819";
+        //let boolApiRunning = false;
+        let reqId = "";
+
+        function getTds(id){
+            let objBody = {};
+            objBody.id = id;
+            postApi(objBody,urlApiGetTds,(data)=>{
+                console.log(data);
+                h2Title.textContent = "Edit ID: "+id;
+                inpPan.value = data.pan;
+                inpOrderId.value = data.orderId;
+                inpName.value = data.name;
+                inpAmount.value = data.amount;
+                inpPhone.value = data.phone;
+                inpPostdate.setDateTime(data.postdate);
+                pTdsDt.textContent = "TDS: "+data.tds+"\nPayable Amount: "+data.paid;
+            },(error)=>{
+                alert(error);
+            });
+        }
+        function count() {
+            let amount = parseFloat(inpAmount.value);
+            let tds = amount * 0.01;
+            let payAmount = amount - tds;
+            pTdsDt.textContent = "TDS: "+tds.toFixed(2)+"\nPayable Amount: "+payAmount.toFixed(2);
+        }
+        function getPan(){
+            const otpNum = inpOtp.value;
+            const panNum = inpPan.value;
+            if(reqId == ""){
+                alert('Please get OTP first');
+                return;
+            }
+            if(otpNum.length != 6){
+                alert('OTP must be 6 Digit');
+                return;
+            }
+
+            loading.style.display = 'flex';
+            const myHeaders = new Headers();
+            myHeaders.append("Accept", "application/json, text/plain, */*");
+            myHeaders.append("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
+            myHeaders.append("Connection", "keep-alive");
+            myHeaders.append("Content-Type", "application/json");
+            //myHeaders.append("Cookie", "rxVisitor=17374392516014QM4DGJUOA81KC13V86KUAGA5K232V78; rxvt=1737441052477|1737439251602; dtPC=-19$439251600_250h-vNGPNNKMRLGRAFUQHAPKGCOCMGNOLCQJK-0e0; dtCookie=v_4_srv_1_sn_CKNPP62UC9CJC2J89VM2SVD8410FJJQU_perc_100000_ol_0_mul_1_app-3A789f7f41ec9fa652_0; dtSa=true%7CC%7C-1%7CVerify%20PAN%20Status%7C-%7C1737439258133%7C439251600_250%7Chttps%3A%2F%2Fwww.incometax.gov.in%2Fiec%2Ffoportal%2F%7C%7C%7C%7C; 693c4e2771754eedb1d75ba0debd40d8=5562eab2b840909d255c55d377b6029c; 534696ad7514a61b1b2fd3340d7ae0d0=d9f653cf947f1e3fcdb148be55cbc0c9");
+            myHeaders.append("Origin", "https://eportal.incometax.gov.in");
+            myHeaders.append("Referer", "https://eportal.incometax.gov.in/iec/foservices/");
+            myHeaders.append("Sec-Fetch-Dest", "empty");
+            myHeaders.append("Sec-Fetch-Mode", "cors");
+            myHeaders.append("Sec-Fetch-Site", "same-origin");
+            myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36");
+            myHeaders.append("sec-ch-ua", "\"Not A(Brand\";v=\"8\", \"Chromium\";v=\"132\", \"Google Chrome\";v=\"132\"");
+            myHeaders.append("sec-ch-ua-mobile", "?0");
+            myHeaders.append("sec-ch-ua-platform", "\"Windows\"");
+            myHeaders.append("sn", "knowYourAoService");
+
+            const raw = JSON.stringify({
+            "panNumber": panNum,
+            "otp": panNum,
+            "mobNo": "9023985819",
+            "areaCd": "91",
+            "serviceName": "knowYourAoService",
+            "formName": "FO-007-KWYAO",
+            "reqId": "FOS006176758652"
+            });
+
+            const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+            };
+
+            postApi2(requestOptions,"https://eportal.incometax.gov.in/iec/guestservicesapi/validateOTP/",(data)=>{
+                console.log(data);
+                if("firstNm" in data) {
+                    let st = "";
+                    for (let key in data) { 
+                        if (typeof data[key] !== "string") { data[key] = String(data[key]); }
+                        st += key + ": " + data[key] + '\n';
+                    }
+                    pPanDt.textContent = st;
+                    loading.style.display = 'none';
+                }else{
+                    let et = "API Errors: \n";
+                    for (let i = 0; i < data.messages.length; i++) {
+                        et += (i+1)+'.  ' + data.messages[i].desc + '\n';
+                    }
+                    pPanDt.textContent = et;
+                    loading.style.display = 'none';
+                }
+            },(error)=>{
+                console.error(error);
+                alert(error);
+                loading.style.display = 'none';
+            });
+        }
+        function getOtp() {
+            const panNum = inpPan.value;
+            if(panNum.length != 10) {
+                alert('PAN Number must be 10 Digit');
+                return;
+            }
+            loading.style.display = 'flex';
+            const myHeaders = new Headers();
+            myHeaders.append("Accept", "application/json, text/plain, */*");
+            myHeaders.append("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
+            myHeaders.append("Connection", "keep-alive");
+            myHeaders.append("Content-Type", "application/json");
+            //myHeaders.append("Cookie", "rxVisitor=17374392516014QM4DGJUOA81KC13V86KUAGA5K232V78; rxvt=1737441052477|1737439251602; dtPC=-19$439251600_250h-vNGPNNKMRLGRAFUQHAPKGCOCMGNOLCQJK-0e0; dtCookie=v_4_srv_1_sn_CKNPP62UC9CJC2J89VM2SVD8410FJJQU_perc_100000_ol_0_mul_1_app-3A789f7f41ec9fa652_0; dtSa=true%7CC%7C-1%7CVerify%20PAN%20Status%7C-%7C1737439258133%7C439251600_250%7Chttps%3A%2F%2Fwww.incometax.gov.in%2Fiec%2Ffoportal%2F%7C%7C%7C%7C; 693c4e2771754eedb1d75ba0debd40d8=5562eab2b840909d255c55d377b6029c; 534696ad7514a61b1b2fd3340d7ae0d0=d9f653cf947f1e3fcdb148be55cbc0c9");
+            myHeaders.append("Origin", "https://eportal.incometax.gov.in");
+            myHeaders.append("Referer", "https://eportal.incometax.gov.in/iec/foservices/");
+            myHeaders.append("Sec-Fetch-Dest", "empty");
+            myHeaders.append("Sec-Fetch-Mode", "cors");
+            myHeaders.append("Sec-Fetch-Site", "same-origin");
+            myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36");
+            myHeaders.append("sec-ch-ua", "\"Not A(Brand\";v=\"8\", \"Chromium\";v=\"132\", \"Google Chrome\";v=\"132\"");
+            myHeaders.append("sec-ch-ua-mobile", "?0");
+            myHeaders.append("sec-ch-ua-platform", "\"Windows\"");
+            myHeaders.append("sn", "knowYourAoService");
+            const raw = JSON.stringify({
+            "panNumber": panNum,
+            "mobNo": mobNo,
+            "areaCd": "91",
+            "serviceName": "knowYourAoService",
+            "formName": "FO-007-KWYAO"
+            });
+            const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+            };
+            postApi2(requestOptions,"https://eportal.incometax.gov.in/iec/guestservicesapi/saveEntity/",(data)=>{
+                console.log(data);
+                if("otp" in data && data.otp == "GENERATED") {
+                    reqId = data.reqId;
+                    btnGetOtp.style.display = 'none';
+                    inpPan.disabled = true;
+                    pPanDt.textContent = 'OTP Sent to: '+mobNo;
+                    divOtp.style.display = 'initial';
+                    loading.style.display = 'none';
+                }else{
+                    let et = "API Errors: \n";
+                    for (let i = 0; i < data.messages.length; i++) {
+                        et += (i+1)+'.  ' + data.messages[i].desc + '\n';
+                    }
+                    pPanDt.textContent = et;
+                    loading.style.display = 'none';
+                }
+            },(error)=>{
+                console.error(error);
+                alert(error);
+                loading.style.display = 'none';
+            });
+        }
+        function load() {
+            document.getElementById('loading').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 5000);
+        }
+        function back(){
+            window.location.href = 'index.html';
+        }
+        async function postApi2(options,url,onSuccess,onError) {
+            if(boolApiRunning){
+                return;
+            }
+            try {
+                boolApiRunning = true;
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                //const data = await response.text();
+                console.log(data);
+                boolApiRunning = false;
+                onSuccess(data);
+            } catch (error) {
+                onError(error);
+                //console.error('Err: ', error);
+            }
+        }
+
+        function addTds(){
+            const objBody = {};
+            objBody.editId = editId;
+            objBody.pan = inpPan.value;
+            objBody.orderId = inpOrderId.value;
+            objBody.name = inpName.value;
+            objBody.amount = parseFloat(inpAmount.value);
+            objBody.phone = inpPhone.value;
+            objBody.postdate = inpPostdate.getDateTime();
+            if(objBody.pan.length != 10 || objBody.amount == "" || objBody.amount == 0){
+                alert("Please fill all fields");
+                return;
+            }
+            postApi(objBody,urlApiTds,(data)=>{
+                if(editId == 0){
+                    alert("Add Successfully");
+                    inpPan.value = "";
+                    inpOrderId.value = "";
+                    inpName.value = "";
+                    inpAmount.value = "";
+                    inpPhone.value = "";
+                    pTdsDt.textContent = "TDS: 00.00\nPayable Amount: 00.00";
+                }else{
+                    alert("Edit Successfully");
+                }
+            },(error)=>{
+                alert(error);
+            });
+        }
+    </script>
+</body>
+</html>

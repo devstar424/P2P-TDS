@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="root.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFPL LOGIN</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        /* .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        } */
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #6200ea;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #3700b3;
+        }
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+        }
+        #divOtp {
+            display: none;
+        }
+        p { 
+            white-space: pre-line; 
+            /* CSS property to preserve line breaks */ 
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        Loading...
+    </div>
+    <div class="form-container">
+        
+            <h2 style="text-align: center;">LOGIN SFPL</h2><br>
+
+            <label for="inputUsername">Username:</label>
+            <input type="text" id="inputUsername" name="inputUsername" placeholder="Username..."">
+
+
+            <label for="inputPassword">Password:</label>
+            <input type="password" id="inputPassword" name="inputPassword" placeholder="Password...">
+
+            <button type="button" onclick="login()">Submit</button>
+        
+    </div>
+
+<script src="script.js"></script>
+<script>
+  function login(){
+    
+        let objBody = {};
+        objBody.username = inputUsername.value;
+        objBody.password = inputPassword.value;
+        if(objBody.username == "" || objBody.password == ""){
+            alert("Please enter username and password");
+            return;
+        }
+        loading.style.display = "flex";
+        postApi(objBody,urlApiAuth,(data) => {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("adminName", data.adminName);
+            inputUsername.value = "";
+            inputPassword.value = "";
+            window.location.href = 'index.html';
+        },(error) => {
+            alert(error);
+            loading.style.display = "none";
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -79,7 +79,8 @@
     </div>
     <div class="form-container">
         
-            <h2 style="text-align: center;">EXPORT HISTORY SFPL</h2><br>
+            <h2 style="text-align: center;">EXPORT HISTORY SFPL</h2>
+            <h4 style="text-align: center;" role="button" type="button" onclick="back()"><-- Back to History</h4><br>
 
             <label for="inputStart">Start Date:</label>
             <input type="datetime-local" id="inputStart" name="inputStart" placeholder="Username..."">
@@ -95,7 +96,10 @@
 <script src="script.js"></script>
 <script>
   function exportHis(){
-    
+        if(!inputStart.value || !inputEnd.value){
+            alert("Please fill all fields");
+            return;
+        }
         let objBody = {};
         objBody.dateStart = inputStart.getDateTime();
         objBody.dateEnd = inputEnd.getDateTime();
@@ -148,6 +152,10 @@
         //     // Trigger the download
         //     downloadCSV(filename, csvContent);
         // });
+
+        function back(){
+            window.location.href = 'index.html';
+        }
     </script>
 
 </body>

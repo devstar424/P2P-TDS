@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="root.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFPL EXPORT</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        /* .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        } */
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #6200ea;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #3700b3;
+        }
+        #loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+        }
+        #divOtp {
+            display: none;
+        }
+        p { 
+            white-space: pre-line; 
+            /* CSS property to preserve line breaks */ 
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        Loading...
+    </div>
+    <div class="form-container">
+        
+            <h2 style="text-align: center;">EXPORT HISTORY SFPL</h2><br>
+
+            <label for="inputStart">Start Date:</label>
+            <input type="datetime-local" id="inputStart" name="inputStart" placeholder="Username..."">
+
+
+            <label for="inputEnd">End Date:</label>
+            <input type="datetime-local" id="inputEnd" name="inputEnd" placeholder="Password...">
+
+            <button type="button" onclick="exportHis()">Export</button>
+        
+    </div>
+
+<script src="script.js"></script>
+<script>
+  function exportHis(){
+    
+        let objBody = {};
+        objBody.dateStart = inputStart.getDateTime();
+        objBody.dateEnd = inputEnd.getDateTime();
+        loading.style.display = "flex";
+        postApi(objBody,urlExport,(data) => {
+            var filename = objBody.dateStart+"_to_"+objBody.dateEnd+"_sfpl_tds_history.csv";
+            // Trigger the download
+            downloadCSV(filename, data.csv);
+            loading.style.display = "none";
+        },(error) => {
+            alert(error);
+            loading.style.display = "none";
+        });
+    }
+        // Function to create a CSV file and trigger the download
+        function downloadCSV(filename, csvContent) {
+            // Create a Blob from the CSV content
+            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Check for the download attribute support
+            if (navigator.msSaveBlob) { // For IE 10+
+                navigator.msSaveBlob(blob, filename);
+            } else {
+                var link = document.createElement("a");
+                if (link.download !== undefined) { // Feature detection
+                    // Create a URL for the Blob and set it as the href attribute
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", filename);
+                    
+                    // Append the link to the document body
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    
+                    // Programmatically click the link to trigger the download
+                    link.click();
+                    
+                    // Remove the link from the document
+                    document.body.removeChild(link);
+                }
+            }
+        }
+
+        // Event listener for the button click
+        // document.getElementById("download-btn").addEventListener("click", function() {
+        //     // Define the CSV content
+        //     var csvContent = "data:text/csv;charset=utf-8,Name,Age,Location\nJohn Doe,30,New York\nJane Smith,25,Los Angeles";
+        //     // Define the filename
+        //     var filename = "sample.csv";
+        //     // Trigger the download
+        //     downloadCSV(filename, csvContent);
+        // });
+    </script>
+
+</body>
+</html>

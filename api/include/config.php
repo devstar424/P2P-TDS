@@ -118,7 +118,6 @@ function sqlGetReq($con,$query,$params = [],$offset = 0,$limit = 1,$haveLimit = 
         return $rows;
     }
 }
-
 function sqlPostReq($con,$row,$table){
     $tempStr = "(";
     $types = "";

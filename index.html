@@ -37,7 +37,7 @@
         }
         #histcon{
             background-color: rgba(0, 0, 0, 0.2);
-            height: 90%;
+            height: 80%;
             overflow-y: auto;
             border-radius: 8px;
             padding: 10px;
@@ -51,6 +51,9 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
+        }
+        button:hover {
+            background-color: #3700b3;
         }
         #ulSelectProductModal li{
             list-style-type: none;
@@ -70,7 +73,8 @@
             <center>
             <div class="loading2" id="loading2">Loading...</div>
             </center>
-        </div>
+        </div><br>
+        <button onclick="exportHistory()">Export History</button>
     </div>
 
     <script src="script.js"></script>
@@ -183,6 +187,9 @@ function editTds(id){
       function newaddd(){
         window.location.href = "add.html";
       }
+        function exportHistory(){
+            window.location.href = "export.html";
+        }
     </script>
 </body>
 </html>

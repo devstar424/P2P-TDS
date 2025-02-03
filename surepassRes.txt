@@ -1,0 +1,85 @@
+Success PAN
+{
+  "data": {
+    "client_id": "pan_comprehensive_DjwkllALSjplyJCzhfvq",
+    "pan_number": "DTIPA2800J",
+    "full_name": "SUHRAVARDI TAKIRHUSEN ABDULRAJAK",
+    "full_name_split": [
+      "SUHRAVARDI",
+      "TAKIRHUSEN",
+      "ABDULRAJAK"
+    ],
+    "masked_aadhaar": "XXXXXXXX0478",
+    "address": {
+      "line_1": "",
+      "line_2": "",
+      "street_name": "",
+      "zip": "",
+      "city": "",
+      "state": "",
+      "country": "",
+      "full": ""
+    },
+    "email": null,
+    "phone_number": null,
+    "gender": "M",
+    "dob": "2002-04-15",
+    "input_dob": null,
+    "aadhaar_linked": true,
+    "dob_verified": false,
+    "dob_check": false,
+    "category": "person",
+    "status": "valid",
+    "less_info": false
+  },
+  "status_code": 200,
+  "success": true,
+  "message": null,
+  "message_code": "success"
+}
+
+for invalid pan 
+{
+  "data": {
+    "client_id": "pan_comprehensive_ZZearxBfotWubxcuzCvX",
+    "pan_number": "DTIPA2801J",
+    "full_name": null,
+    "full_name_split": [],
+    "masked_aadhaar": null,
+    "address": {
+      "line_1": "",
+      "line_2": "",
+      "street_name": "",
+      "zip": "",
+      "city": "",
+      "state": "",
+      "country": "",
+      "full": ""
+    },
+    "email": null,
+    "phone_number": null,
+    "gender": null,
+    "dob": null,
+    "input_dob": null,
+    "aadhaar_linked": null,
+    "dob_verified": false,
+    "dob_check": false,
+    "category": "person",
+    "status": "invalid",
+    "less_info": true
+  },
+  "status_code": 422,
+  "success": false,
+  "message": "Invalid PAN",
+  "message_code": null
+}
+
+invalid token
+{
+  "data": null,
+  "error": null,
+  "message": "Your token(signature) is invalid. Please ensure that if it is a sandbox token then it is being used in 'sandbox.surepass.io' and if it is a production then it is being used in 'kyc-api.surepass.io'",
+  "status_code": 401,
+  "success": false,
+  "message_code": "invalid_token"
+}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2025 at 01:55 PM
+-- Generation Time: Feb 03, 2025 at 12:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -85,8 +85,10 @@ CREATE TABLE `history` (
   `id` int(11) NOT NULL,
   `admin_name` varchar(64) NOT NULL DEFAULT '',
   `pan` varchar(16) NOT NULL DEFAULT '',
-  `orderId` varchar(64) NOT NULL DEFAULT '',
   `name` varchar(64) NOT NULL DEFAULT '',
+  `link_aadhar` tinyint(1) NOT NULL DEFAULT 0,
+  `mask_aadhar` varchar(32) NOT NULL DEFAULT '',
+  `orderId` varchar(64) NOT NULL DEFAULT '',
   `amount` float(13,2) NOT NULL DEFAULT 0.00,
   `phone` varchar(32) NOT NULL DEFAULT '',
   `edit` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`edit`)),
@@ -132,7 +134,7 @@ ALTER TABLE `history`
 -- AUTO_INCREMENT for table `active_admin`
 --
 ALTER TABLE `active_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -144,13 +146,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `deleted_row`
 --
 ALTER TABLE `deleted_row`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

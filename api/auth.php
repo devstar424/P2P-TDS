@@ -23,7 +23,7 @@ $activeAdminId = sqlPostReq($con, $objActiveAdmin, $strTableSqlActiveAdmin);
 
 $sendData->token = $token;
 $sendData->adminName = $adminData->name;
-
+$sendData->surepasstoken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczODU2Nzc1NiwianRpIjoiZTQwMDZhMjUtOTBjOC00MzM1LTkzMzEtOWMyMTg5ODVkYTllIiwidHlwZSI6ImFjY2VzcyIsImlkZW50aXR5IjoiZGV2LnNodXJhdkBzdXJlcGFzcy5pbyIsIm5iZiI6MTczODU2Nzc1NiwiZXhwIjoyMzY5Mjg3NzU2LCJlbWFpbCI6InNodXJhdkBzdXJlcGFzcy5pbyIsInRlbmFudF9pZCI6Im1haW4iLCJ1c2VyX2NsYWltcyI6eyJzY29wZXMiOlsidXNlciJdfX0.b2JBKNxQ_Y31SQn0Padj1S5OvrqaT1xXwIAF-RdnlI0";
 echoJsonSuccess($sendData);
 
 

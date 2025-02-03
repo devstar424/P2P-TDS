@@ -9,11 +9,12 @@ const urlApiDeleteTds = `${urlApi}/dlt.php`;
 const urlExport = `${urlApi}/exp.php`;
 
 const filename = window.location.pathname.split('/').pop();
-const token = localStorage.getItem('token');
+const p2ptdstoken = localStorage.getItem('p2ptdstoken');
+const surepasstoken = localStorage.getItem('surepasstoken');
 
 (function() {
     // Redirect to login if new
-    if (filename !== 'login.html' && (!token || token.trim() === "")) {
+    if (filename !== 'login.html' && (!p2ptdstoken || p2ptdstoken.trim() === "")) {
         console.log("Redirecting to login...");
         window.location.href = `${urlSfpl}/login.html`;
         return;
@@ -22,5 +23,5 @@ const token = localStorage.getItem('token');
 })();
 
 function getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem('p2ptdstoken');
 }

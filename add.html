@@ -35,7 +35,15 @@
             border-radius: 4px;
             background-color: #333;
             color: #fff;
-            
+        }
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
         }
         .form-container button {
             width: 100%;
@@ -63,9 +71,6 @@
             align-items: center;
             color: #fff;
             font-size: 24px;
-        }
-        #divOtp {
-            display: none;
         }
         #divPostdate {
             display: none;
@@ -95,13 +100,7 @@
 
             <label for="inpPan">PAN*:</label>
             <input type="text" id="inpPan" name="inpPan" placeholder="AAAAA0000A" required>
-            <button id="btnGetOtp" type="button" onclick="getOtp()">Get OTP</button>
-            <br>
-            <div id="divOtp">
-                <label for="inpOtp">OTP:</label>
-                <input type="number" id="inpOtp" name="inpOtp" placeholder="Enter OTP here" required>
-                <button type="button" onclick="getPan()">Verify PAN</button>
-            </div>
+            <button id="btnGetOtp" type="button" onclick="verifyPan()">Verify PAN</button>
 
             <p id="pPanDt">Pan Details:</p>
             <br>
@@ -111,6 +110,13 @@
 
             <label for="inpName">Name:</label>
             <input type="text" id="inpName" name="inpName" placeholder="Enter Name Here...">
+            <label for="inpAadhar">Aadhar:</label>
+            <input type="text" id="inpAadhar" name="inpAadhar" placeholder="XXXXXXXX0000">
+            <label for="slcAadharlink">Aadhar Link:</label>
+            <select type="text" id="slcAadharlink" name="slcAadharlink">
+                <option value="1">true</option>
+                <option value="0">false</option>
+            </select>
 
             <label for="inpAmount">Amount*:</label>
             <input type="number" id="inpAmount" name="inpAmount" placeholder="Total Amount..." oninput="count()">
@@ -147,7 +153,6 @@
           btnDelete.style.display = 'initial';
           btnGetOtp.style.display = 'none';
       }
-        //const token = localStorage.getItem('token');
         const mobNo = "9023985819";
         //let boolApiRunning = false;
         let reqId = "";
@@ -159,8 +164,10 @@
                 console.log(data);
                 h2Title.textContent = "Edit ID: "+id;
                 inpPan.value = data.pan;
-                inpOrderId.value = data.orderId;
                 inpName.value = data.name;
+                inpAadhar.value = data.mask_aadhar;
+                slcAadharlink.value = data.link_aadhar;
+                inpOrderId.value = data.orderId;
                 inpAmount.value = data.amount;
                 inpPhone.value = data.phone;
                 inpPostdate.setDateTime(data.postdate);
@@ -187,68 +194,45 @@
             let payAmount = amount - tds;
             pTdsDt.textContent = "TDS: "+tds.toFixed(2)+"\nPayable Amount: "+payAmount.toFixed(2);
         }
-        function getPan(){
-            const otpNum = inpOtp.value;
+        function verifyPan(){
             const panNum = inpPan.value;
-            if(reqId == ""){
-                alert('Please get OTP first');
+            if(panNum.length != 10){
+                alert('PAN must be 10 Digit');
                 return;
             }
-            if(otpNum.length != 6){
-                alert('OTP must be 6 Digit');
-                return;
-            }
-
-            loading.style.display = 'flex';
             const myHeaders = new Headers();
-            myHeaders.append("Accept", "application/json, text/plain, */*");
-            myHeaders.append("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
-            myHeaders.append("Connection", "keep-alive");
+            myHeaders.append("Authorization", surepasstoken);
             myHeaders.append("Content-Type", "application/json");
-            //myHeaders.append("Cookie", "rxVisitor=17374392516014QM4DGJUOA81KC13V86KUAGA5K232V78; rxvt=1737441052477|1737439251602; dtPC=-19$439251600_250h-vNGPNNKMRLGRAFUQHAPKGCOCMGNOLCQJK-0e0; dtCookie=v_4_srv_1_sn_CKNPP62UC9CJC2J89VM2SVD8410FJJQU_perc_100000_ol_0_mul_1_app-3A789f7f41ec9fa652_0; dtSa=true%7CC%7C-1%7CVerify%20PAN%20Status%7C-%7C1737439258133%7C439251600_250%7Chttps%3A%2F%2Fwww.incometax.gov.in%2Fiec%2Ffoportal%2F%7C%7C%7C%7C; 693c4e2771754eedb1d75ba0debd40d8=5562eab2b840909d255c55d377b6029c; 534696ad7514a61b1b2fd3340d7ae0d0=d9f653cf947f1e3fcdb148be55cbc0c9");
-            myHeaders.append("Origin", "https://eportal.incometax.gov.in");
-            myHeaders.append("Referer", "https://eportal.incometax.gov.in/iec/foservices/");
-            myHeaders.append("Sec-Fetch-Dest", "empty");
-            myHeaders.append("Sec-Fetch-Mode", "cors");
-            myHeaders.append("Sec-Fetch-Site", "same-origin");
-            myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36");
-            myHeaders.append("sec-ch-ua", "\"Not A(Brand\";v=\"8\", \"Chromium\";v=\"132\", \"Google Chrome\";v=\"132\"");
-            myHeaders.append("sec-ch-ua-mobile", "?0");
-            myHeaders.append("sec-ch-ua-platform", "\"Windows\"");
-            myHeaders.append("sn", "knowYourAoService");
-
             const raw = JSON.stringify({
-            "panNumber": panNum,
-            "otp": panNum,
-            "mobNo": "9023985819",
-            "areaCd": "91",
-            "serviceName": "knowYourAoService",
-            "formName": "FO-007-KWYAO",
-            "reqId": "FOS006176758652"
+            "id_number": panNum
             });
-
             const requestOptions = {
             method: "POST",
             headers: myHeaders,
             body: raw,
             redirect: "follow"
             };
-
-            postApi2(requestOptions,"https://eportal.incometax.gov.in/iec/guestservicesapi/validateOTP/",(data)=>{
+            loading.style.display = 'flex';
+            postApi2(requestOptions,"https://kyc-api.surepass.io/api/v1/pan/pan-comprehensive",(data)=>{
                 console.log(data);
-                if("firstNm" in data) {
+                if(data.success){
                     let st = "";
-                    for (let key in data) { 
-                        if (typeof data[key] !== "string") { data[key] = String(data[key]); }
-                        st += key + ": " + data[key] + '\n';
+                    st += " Name: " + data.data.full_name + '\n';
+                    st += " Aadhar:" + data.data.masked_aadhaar + '\n';
+                    st += " DOB: " + data.data.dob + '\n';
+                    st += " Aadhar Link: " + data.data.aadhaar_linked + '\n';
+                    inpName.value = data.data.full_name;
+                    inpAadhar.value = data.data.masked_aadhaar;
+                    if(data.data.aadhaar_linked){
+                        slcAadharlink.value = 1;
+                    }else{
+                        slcAadharlink.value = 0;
                     }
                     pPanDt.textContent = st;
                     loading.style.display = 'none';
                 }else{
-                    let et = "API Errors: \n";
-                    for (let i = 0; i < data.messages.length; i++) {
-                        et += (i+1)+'.  ' + data.messages[i].desc + '\n';
-                    }
+                    let et = "\n\n API Error: ";
+                    et += data.message;
                     pPanDt.textContent = et;
                     loading.style.display = 'none';
                 }
@@ -258,65 +242,7 @@
                 loading.style.display = 'none';
             });
         }
-        function getOtp() {
-            const panNum = inpPan.value;
-            if(panNum.length != 10) {
-                alert('PAN Number must be 10 Digit');
-                return;
-            }
-            loading.style.display = 'flex';
-            const myHeaders = new Headers();
-            myHeaders.append("Accept", "application/json, text/plain, */*");
-            myHeaders.append("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
-            myHeaders.append("Connection", "keep-alive");
-            myHeaders.append("Content-Type", "application/json");
-            //myHeaders.append("Cookie", "rxVisitor=17374392516014QM4DGJUOA81KC13V86KUAGA5K232V78; rxvt=1737441052477|1737439251602; dtPC=-19$439251600_250h-vNGPNNKMRLGRAFUQHAPKGCOCMGNOLCQJK-0e0; dtCookie=v_4_srv_1_sn_CKNPP62UC9CJC2J89VM2SVD8410FJJQU_perc_100000_ol_0_mul_1_app-3A789f7f41ec9fa652_0; dtSa=true%7CC%7C-1%7CVerify%20PAN%20Status%7C-%7C1737439258133%7C439251600_250%7Chttps%3A%2F%2Fwww.incometax.gov.in%2Fiec%2Ffoportal%2F%7C%7C%7C%7C; 693c4e2771754eedb1d75ba0debd40d8=5562eab2b840909d255c55d377b6029c; 534696ad7514a61b1b2fd3340d7ae0d0=d9f653cf947f1e3fcdb148be55cbc0c9");
-            myHeaders.append("Origin", "https://eportal.incometax.gov.in");
-            myHeaders.append("Referer", "https://eportal.incometax.gov.in/iec/foservices/");
-            myHeaders.append("Sec-Fetch-Dest", "empty");
-            myHeaders.append("Sec-Fetch-Mode", "cors");
-            myHeaders.append("Sec-Fetch-Site", "same-origin");
-            myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36");
-            myHeaders.append("sec-ch-ua", "\"Not A(Brand\";v=\"8\", \"Chromium\";v=\"132\", \"Google Chrome\";v=\"132\"");
-            myHeaders.append("sec-ch-ua-mobile", "?0");
-            myHeaders.append("sec-ch-ua-platform", "\"Windows\"");
-            myHeaders.append("sn", "knowYourAoService");
-            const raw = JSON.stringify({
-            "panNumber": panNum,
-            "mobNo": mobNo,
-            "areaCd": "91",
-            "serviceName": "knowYourAoService",
-            "formName": "FO-007-KWYAO"
-            });
-            const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-            };
-            postApi2(requestOptions,"https://eportal.incometax.gov.in/iec/guestservicesapi/saveEntity/",(data)=>{
-                console.log(data);
-                if("otp" in data && data.otp == "GENERATED") {
-                    reqId = data.reqId;
-                    btnGetOtp.style.display = 'none';
-                    inpPan.disabled = true;
-                    pPanDt.textContent = 'OTP Sent to: '+mobNo;
-                    divOtp.style.display = 'initial';
-                    loading.style.display = 'none';
-                }else{
-                    let et = "API Errors: \n";
-                    for (let i = 0; i < data.messages.length; i++) {
-                        et += (i+1)+'.  ' + data.messages[i].desc + '\n';
-                    }
-                    pPanDt.textContent = et;
-                    loading.style.display = 'none';
-                }
-            },(error)=>{
-                console.error(error);
-                alert(error);
-                loading.style.display = 'none';
-            });
-        }
+        
         function load() {
             document.getElementById('loading').style.display = 'flex';
             setTimeout(() => {
@@ -333,9 +259,9 @@
             try {
                 boolApiRunning = true;
                 const response = await fetch(url, options);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                // if (!response.ok) {
+                //     throw new Error('Network response was not ok');
+                // }
                 const data = await response.json();
                 //const data = await response.text();
                 console.log(data);
@@ -353,6 +279,8 @@
             objBody.pan = inpPan.value;
             objBody.orderId = inpOrderId.value;
             objBody.name = inpName.value;
+            objBody.mask_aadhar = inpAadhar.value;
+            objBody.link_aadhar = slcAadharlink.value;
             objBody.amount = parseFloat(inpAmount.value);
             objBody.phone = inpPhone.value;
             objBody.postdate = inpPostdate.getDateTime();
@@ -366,6 +294,8 @@
                     inpPan.value = "";
                     inpOrderId.value = "";
                     inpName.value = "";
+                    inpAadhar.value = "";
+                    slcAadharlink.value = 1;
                     inpAmount.value = "";
                     inpPhone.value = "";
                     pTdsDt.textContent = "TDS: 00.00\nPayable Amount: 00.00";

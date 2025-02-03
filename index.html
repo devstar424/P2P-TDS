@@ -140,7 +140,7 @@ function createLiSelectProductElement(productObj, index, eventHandlers) {
     let liText = "";
     for (let key in productObj) {
         if(key != "edit"){
-            liText += `${productObj[key]}, . . . . .`;
+            liText += `${productObj[key]}, `;
         }
     }
     li.textContent = liText.slice(0, -3);

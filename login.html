@@ -105,8 +105,9 @@
         }
         loading.style.display = "flex";
         postApi(objBody,urlApiAuth,(data) => {
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("p2ptdstoken", data.token);
             localStorage.setItem("adminName", data.adminName);
+            localStorage.setItem("surepasstoken", data.surepasstoken);
             inputUsername.value = "";
             inputPassword.value = "";
             window.location.href = 'index.html';

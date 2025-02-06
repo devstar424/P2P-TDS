@@ -95,7 +95,10 @@ function qryGet($columns,$table, ...$conditions){
     }
     return $qry;
 }
-function sqlGetReq($con,$query,$params = [],$offset = 0,$limit = 1,$haveLimit = true){
+function sqlGetReq($con,$query,$params = [],$offset = 0,$limit = 1,$haveLimit = true,$reverse = true){
+    if($reverse){
+        $query .= " ORDER BY id DESC";
+    }
     if($haveLimit){
         $query .= " LIMIT ?, ?";
         $params[] = $offset;

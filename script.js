@@ -15,7 +15,7 @@ async function postApi(objBody,url,onSuccess,onError,loader2 = null) {
         }
         const data = await response.json();
         //const data = await response.text();
-        console.log(data);
+        //console.log(data);
         boolApiRunning = false;
         if(data.res == "s"){
             onSuccess(data.data);

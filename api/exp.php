@@ -13,7 +13,7 @@ $paramsSqlKhata = [$postData->dateStart,$postData->dateEnd];
 
 
 // Connect to database and Get Data
-$arr = sqlGetReq($con,$querySqlKhata,$paramsSqlKhata,haveLimit: false);
+$arr = sqlGetReq($con,$querySqlKhata,$paramsSqlKhata,haveLimit: false,reverse: false);
 foreach($arr as $row){
     $dataCsv.= $row->pan.",".$row->name.",".$row->amount.",".$row->postdate.",".$row->tds.",".$row->paid."\n";
 }

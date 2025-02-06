@@ -4,6 +4,7 @@
     <script src="root.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="assets/img/sfpl.png" type="image/png">
     <title>TDS History</title>
     <style>
         body {
@@ -143,7 +144,7 @@ function createLiSelectProductElement(productObj, index, eventHandlers) {
             liText += `${productObj[key]}, `;
         }
     }
-    li.textContent = liText.slice(0, -3);
+    li.textContent = liText.slice(0, -2);
     let longPressTimer;
     let longPressDetected = false;
     // Add event listeners dynamically

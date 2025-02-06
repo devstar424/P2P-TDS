@@ -1,4 +1,4 @@
-const urlSfpl = `http://192.168.240.162/onedrive/X/Project/P2P-TDS`;
+const urlSfpl = `http://localhost/onedrive/X/Project/P2P-TDS`;
 const urlApi = `${urlSfpl}/api`;
 const urlApiAuth = `${urlApi}/auth.php`;
 const urlApiLogout = `${urlApi}/logout.php`;
